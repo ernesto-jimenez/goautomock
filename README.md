@@ -1,111 +1,132 @@
 # goautomock
 
-Automatically generate mocks
+Automatically generate mocks from interfaces using `go generate`
 
 # Usage
 
-Creating an interface in your code to mock a dependency
+Creating an interface in your code to mock a dependency:
 
+[embedmd]:# (_examples/simple/example_test.go /.*goautomock.*/ $)
 ```go
+//go:generate goautomock server
+
 type server interface {
-  Serve(string) ([]byte, error)
+	Serve(string) ([]byte, error)
 }
 
 func request(s server, path string) ([]byte, error) {
-  return s.Serve(path)
+	return s.Serve(path)
 }
-
-//go:generate goautomock server
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-  m := &requestMock{}
-  m.On("Serve", "/something").Return(nil, errors.New("failure"))
-  _, err := request(m, "/something")
-  assert.Error(t, err)
+	m := &serverMock{}
+	var calls int
+	m.ServeFunc = func(in string) ([]byte, error) {
+		calls++
+		return nil, errors.New("error")
+	}
+	_, err := request(m, "/something")
+	assert.Error(t, err)
+	assert.Equal(t, 1, calls)
 }
 ```
 
-Mocking an interface from the standard library
+Here you can see what the generated mock looks like:
 
+[embedmd]:# (_examples/simple/server_mock_test.go)
+```go
+/*
+* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/goautomock
+* THIS FILE MUST NEVER BE EDITED MANUALLY
+ */
+
+package simple
+
+// serverMock mock
+type serverMock struct {
+	ServeFunc func(string) ([]byte, error)
+}
+
+// Serve mocked method
+func (m *serverMock) Serve(p0 string) ([]byte, error) {
+	if m.ServeFunc == nil {
+		panic("unexpected call to mocked method Serve")
+	}
+	return m.ServeFunc(p0)
+}
+```
+
+Mocking an interface from the standard library:
+
+[embedmd]:# (_examples/simple/stdlib_test.go /.*goautomock.*/ $)
 ```go
 //go:generate goautomock io.Writer
 
 // Dummy test using the generated mock
 func TestWriter(t *testing.T) {
-  m := &WriterMock{}
-  expected := []byte("hello world")
-  m.On("Write", expected).Return(11, nil)
+	m := &WriterMock{}
+	expected := []byte("hello world")
 
-  n, err := m.Write(expected)
-  assert.Equal(t, 11, n)
-  assert.Equal(t, nil, err)
+	m.WriteFunc = func(b []byte) (int, error) {
+		assert.Equal(t, expected, b)
+		return len(b), nil
+	}
+
+	n, err := m.Write(expected)
+	assert.NoError(t, err)
+	assert.Equal(t, 11, n)
 }
 ```
 
-Printing the generated code:
+# Picking a different mock style
 
+`goautomock` ships with different mock templates. You can see which ones with:
+
+```shell
+$ goautomock -list-templates
+simple
+testify
+```
+
+You can pick the template you want to use with `-template`
+
+[embedmd]:# (_examples/simple/example_test.go /.*goautomock.*/ $)
 ```go
-$ goautomock -o=- io.ReadCloser
-/*
-* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/gogen/automock
-* THIS FILE SHOULD NOT BE EDITED BY HAND
- */
+//go:generate goautomock server
 
-package gogen
-
-import (
-  "fmt"
-  mock "github.com/stretchr/testify/mock"
-)
-
-// ReadCloserMock mock
-type ReadCloserMock struct {
-  mock.Mock
+type server interface {
+	Serve(string) ([]byte, error)
 }
 
-// Close mocked method
-func (m *ReadCloserMock) Close() error {
-
-  ret := m.Called()
-
-  var r0 error
-  switch res := ret.Get(0).(type) {
-  case nil:
-  case error:
-    r0 = res
-  default:
-    panic(fmt.Sprintf("unexpected type: %v", res))
-  }
-
-  return r0
-
+func request(s server, path string) ([]byte, error) {
+	return s.Serve(path)
 }
 
-// Read mocked method
-func (m *ReadCloserMock) Read(p0 []byte) (int, error) {
-
-  ret := m.Called(p0)
-
-  var r0 int
-  switch res := ret.Get(0).(type) {
-  case nil:
-  case int:
-    r0 = res
-  default:
-    panic(fmt.Sprintf("unexpected type: %v", res))
-  }
-
-  var r1 error
-  switch res := ret.Get(1).(type) {
-  case nil:
-  case error:
-    r1 = res
-  default:
-    panic(fmt.Sprintf("unexpected type: %v", res))
-  }
-
-  return r0, r1
-
+// Dummy test
+func TestRequestReturnsServerError(t *testing.T) {
+	m := &serverMock{}
+	var calls int
+	m.ServeFunc = func(in string) ([]byte, error) {
+		calls++
+		return nil, errors.New("error")
+	}
+	_, err := request(m, "/something")
+	assert.Error(t, err)
+	assert.Equal(t, 1, calls)
 }
+```
+
+## Defining your own mock templates
+
+You can use your own custom template by passing a file name to `-template`. Example:
+
+```shell
+# Create a new template based on goautocomplete's testify template
+$ goautomock -template=simple -print-template > mock.go.tpl
+
+# Customise your template
+
+# Use your template
+$ goautomock -template=mock.go.tpl io.Writer
 ```

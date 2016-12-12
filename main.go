@@ -92,7 +92,7 @@ func main() {
 	}
 	inPkg := *pkg == "." && path.Dir(*out) == "."
 	gen.SetInternal(inPkg)
-	if *mockPkg == "" && !inPkg {
+	if *mockPkg == "" && path.Dir(*out) == "." {
 		p, err := importer.Default().Import(".")
 		if err != nil {
 			log.Fatal(err)

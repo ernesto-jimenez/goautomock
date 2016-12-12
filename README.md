@@ -104,9 +104,9 @@ testify
 
 You can pick the template you want to use with `-template`
 
-[embedmd]:# (_examples/simple/example_test.go /.*goautomock.*/ $)
+[embedmd]:# (_examples/testify/example_test.go /.*goautomock.*/ $)
 ```go
-//go:generate goautomock server
+//go:generate goautomock -template=testify server
 
 type server interface {
 	Serve(string) ([]byte, error)
@@ -118,13 +118,12 @@ func request(s server, path string) ([]byte, error) {
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-	m := NewServerMock()
-	m.ServeFunc = func(in string) ([]byte, error) {
-		return nil, errors.New("error")
-	}
+	m := &serverMock{}
+	m.On("Serve", "/something").Return(nil, errors.New("error"))
+
 	_, err := request(m, "/something")
 	assert.Error(t, err)
-	assert.Equal(t, 1, m.ServeTotalCalls())
+	m.AssertNumberOfCalls(t, "Serve", 1)
 }
 ```
 

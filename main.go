@@ -12,7 +12,6 @@ import (
 
 	"github.com/ernesto-jimenez/goautomock/automock"
 	"github.com/ernesto-jimenez/gogen/importer"
-	"github.com/ernesto-jimenez/gogen/strconv"
 )
 
 //go:generate go-bindata -pkg $GOPACKAGE -o templates.go templates/
@@ -111,7 +110,7 @@ func main() {
 		}
 	}
 	if *out != "-" {
-		*out = strconv.SnakeCase(*out)
+		*out = SnakeCase(*out)
 		log.Printf("Generating mock for %s in %s", iface, *out)
 		w, err = os.OpenFile(*out, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0666)
 		if err != nil {

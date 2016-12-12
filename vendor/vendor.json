@@ -33,12 +33,6 @@
 			"revisionTime": "2016-08-26T15:44:14Z"
 		},
 		{
-			"checksumSHA1": "BUJ5TJL90g0+eqryFIqlvlzYCv8=",
-			"path": "github.com/ernesto-jimenez/gogen/strconv",
-			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
-			"revisionTime": "2016-08-26T15:44:14Z"
-		},
-		{
 			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",

@@ -1,0 +1,49 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "KZrMkvVU54l1vtmsGXMkiaxV748=",
+			"path": "github.com/ernesto-jimenez/gogen/automock",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "N5z9YUTXV8CTD8WRGA0APYx7KrI=",
+			"path": "github.com/ernesto-jimenez/gogen/cleanimports",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "YXOfrh4aq9tis6JZ7bxzkclQBGM=",
+			"path": "github.com/ernesto-jimenez/gogen/gogenutil",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "rQqX7eipIzc4PXzaj7/V7Q2RJhE=",
+			"path": "github.com/ernesto-jimenez/gogen/importer",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "eI2bB2RGUWjjtcK04vzW4B5xm+A=",
+			"path": "github.com/ernesto-jimenez/gogen/imports",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "BUJ5TJL90g0+eqryFIqlvlzYCv8=",
+			"path": "github.com/ernesto-jimenez/gogen/strconv",
+			"revision": "957c4ec2f9b517715281e61363e76421d7617f99",
+			"revisionTime": "2016-08-26T15:44:14Z"
+		},
+		{
+			"checksumSHA1": "SoOfjYDw7R1N1P2aHxIjXYFmWUo=",
+			"path": "golang.org/x/tools/go/ast/astutil",
+			"revision": "7d72743fcee8196243e764bcff70047b6c3ce126",
+			"revisionTime": "2016-12-10T19:39:41Z"
+		}
+	],
+	"rootPath": "github.com/ernesto-jimenez/goautomock"
+}

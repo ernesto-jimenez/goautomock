@@ -8,6 +8,7 @@ import (
 	"go/types"
 	"io"
 	"text/template"
+	"unicode"
 
 	"github.com/ernesto-jimenez/gogen/cleanimports"
 	"github.com/ernesto-jimenez/gogen/importer"
@@ -115,7 +116,15 @@ func (g Generator) Imports() map[string]string {
 
 // SetTemplate allows defining a different template to generate the mock. It will be parsed with text/template and execuded with the Generator.
 func (g *Generator) SetTemplate(tmpl string) error {
-	t, err := template.New("mock").Parse(header + tmpl)
+	t, err := template.New("mock").Funcs(map[string]interface{}{
+		"Capitalize": func(str string) string {
+			runes := []rune(str)
+			if len(runes) > 0 {
+				runes[0] = unicode.ToUpper(runes[0])
+			}
+			return string(runes)
+		},
+	}).Parse(header + tmpl)
 	if err != nil {
 		return err
 	}

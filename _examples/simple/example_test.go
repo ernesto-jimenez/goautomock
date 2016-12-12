@@ -19,13 +19,11 @@ func request(s server, path string) ([]byte, error) {
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-	m := &serverMock{}
-	var calls int
+	m := NewServerMock()
 	m.ServeFunc = func(in string) ([]byte, error) {
-		calls++
 		return nil, errors.New("error")
 	}
 	_, err := request(m, "/something")
 	assert.Error(t, err)
-	assert.Equal(t, 1, calls)
+	assert.Equal(t, 1, m.ServeTotalCalls())
 }

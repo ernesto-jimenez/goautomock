@@ -10,7 +10,7 @@ import (
 
 // Dummy test using the generated mock
 func TestWriter(t *testing.T) {
-	m := &WriterMock{}
+	m := NewWriterMock()
 	expected := []byte("hello world")
 
 	m.WriteFunc = func(b []byte) (int, error) {
@@ -21,4 +21,5 @@ func TestWriter(t *testing.T) {
 	n, err := m.Write(expected)
 	assert.NoError(t, err)
 	assert.Equal(t, 11, n)
+	assert.Equal(t, 1, m.WriteTotalCalls())
 }

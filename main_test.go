@@ -51,12 +51,10 @@ type unexported interface {
 //go:generate ./goautomock unexported
 
 func TestUnexported(t *testing.T) {
-	m := &unexportedMock{}
-	var calls int
+	m := NewUnexportedMock()
 	m.ReadFunc = func(b []byte) (int, error) {
-		calls++
 		return 0, nil
 	}
 	m.Read([]byte{})
-	assert.Equal(t, 1, calls)
+	assert.Equal(t, 1, m.ReadTotalCalls())
 }

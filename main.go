@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -14,16 +15,51 @@ import (
 	"github.com/ernesto-jimenez/gogen/strconv"
 )
 
+//go:generate go-bindata -pkg $GOPACKAGE -o templates.go templates/
+
 var (
 	out      = flag.String("o", "", "override the name of the generated code. Default value is by generated based on the name of the interface, e.g.: Reader -> reader_mock_test.go (use \"-\" to print to stdout)")
 	mockName = flag.String("mock-name", "", "override the name for the mock struct")
 	mockPkg  = flag.String("mock-pkg", "", "override the package name for the mock")
+	template = flag.String("template", "simple", "pick a template to use to generate the mock. The template file used to generate the mock or the name of one of the embedded templates")
+	printTpl = flag.Bool("print-template", false, "print the selected template. It can be used to prepare your own template")
+	listTpls = flag.Bool("list-templates", false, "list all the embedded templates available in goautomock")
 	pkg      = flag.String("pkg", ".", "override package to get the interface from. It can be specified in the interface name, e.g.: goautomock io.Reader")
 )
 
 func main() {
 	flag.Parse()
 	log.SetFlags(0)
+
+	if *listTpls {
+		listTemplates()
+		return
+	}
+
+	if *template == "" {
+		*template = "testify"
+	}
+
+	var tpl string
+
+	if _, err := os.Stat(*template); err != nil {
+		c, err := Asset("templates/" + *template + ".go.tpl")
+		if err != nil {
+			log.Fatal(err)
+		}
+		tpl = string(c)
+	} else if err == nil {
+		c, err := ioutil.ReadFile(*template)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tpl = string(c)
+	}
+
+	if *printTpl {
+		fmt.Println(tpl)
+		return
+	}
 
 	iface := flag.Arg(0)
 
@@ -48,6 +84,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	gen.SetTemplate(tpl)
 
 	if *mockName != "" {
 		gen.SetName(*mockName)
@@ -88,5 +126,18 @@ func main() {
 		log.Fatal(err)
 	case error:
 		log.Fatal(err)
+	}
+}
+
+func listTemplates() {
+	list, err := AssetDir("templates")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range list {
+		if !strings.HasSuffix(f, ".go.tpl") {
+			continue
+		}
+		fmt.Println(strings.TrimSuffix(f, ".go.tpl"))
 	}
 }

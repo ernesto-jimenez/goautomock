@@ -3,6 +3,7 @@ package automock
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"go/types"
 	"io"
@@ -24,6 +25,9 @@ type Generator struct {
 	mockTmpl  *template.Template
 }
 
+// DefaultTemplate allows you to setup a default template for all new generators
+var DefaultTemplate string
+
 // NewGenerator initializes a Generator that will mock the given interface from the specified package.
 func NewGenerator(pkg, iface string) (*Generator, error) {
 	p, err := importer.DefaultWithTestFiles().Import(pkg)
@@ -42,7 +46,9 @@ func NewGenerator(pkg, iface string) (*Generator, error) {
 		pkg:       p,
 		iface:     obj.Type().Underlying().(*types.Interface).Complete(),
 	}
-	g.SetTemplate(defaultMockTemplate)
+	if DefaultTemplate != "" {
+		g.SetTemplate(DefaultTemplate)
+	}
 	return g, nil
 }
 
@@ -109,7 +115,7 @@ func (g Generator) Imports() map[string]string {
 
 // SetTemplate allows defining a different template to generate the mock. It will be parsed with text/template and execuded with the Generator.
 func (g *Generator) SetTemplate(tmpl string) error {
-	t, err := template.New("mock").Parse(tmpl)
+	t, err := template.New("mock").Parse(header + tmpl)
 	if err != nil {
 		return err
 	}
@@ -120,6 +126,9 @@ func (g *Generator) SetTemplate(tmpl string) error {
 // Write writes the generated code in the io.Writer
 func (g Generator) Write(wr io.Writer) error {
 	var buf bytes.Buffer
+	if g.mockTmpl == nil {
+		return errors.New("missing template - call SetTemplate before")
+	}
 	if err := g.mockTmpl.Execute(&buf, g); err != nil {
 		return err
 	}
@@ -155,47 +164,9 @@ func (err GenerationError) CodeWithLineNumbers() string {
 	return buf.String()
 }
 
-var (
-	defaultMockTemplate = `/*
-* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/gogen/automock
-* THIS FILE SHOULD NOT BE EDITED BY HAND
+const header = `/*
+* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/goautomock
+* THIS FILE MUST NEVER BE EDITED MANUALLY
 */
 
-package {{.Package}}
-
-import (
-	"fmt"
-	mock "github.com/stretchr/testify/mock"
-{{range $path, $name := .Imports}}
-	{{$name}} "{{$path}}"{{end}}
-)
-
-// {{.Name}} mock
-type {{.Name}} struct {
-	mock.Mock
-}
-
-{{$gen := .}}
-{{range .Methods}}
-// {{.Name}} mocked method
-func (m *{{$gen.Name}}) {{.Name}}({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}} {{$type}}{{end}}) ({{range $index, $type := .ReturnTypes}}{{if $index}}, {{end}}{{$type}}{{end}}) {
-{{if .ReturnTypes}}
-	ret := m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}})
-	{{range $index, $type := .ReturnTypes}}
-	var r{{$index}} {{$type}}
-	switch res := ret.Get({{$index}}).(type) {
-	case nil:
-	case {{$type}}:
-		r{{$index}} = res
-	default:
-		panic(fmt.Sprintf("unexpected type: %v", res))
-	}
-	{{end}}
-	return {{range $index, $type := .ReturnTypes}}{{if $index}}, {{end}}r{{$index}}{{end}}
-{{else}}
-	m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}})
-{{end}}
-}
-{{end}}
 `
-)

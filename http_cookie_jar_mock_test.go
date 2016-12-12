@@ -1,9 +1,9 @@
 /*
-* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/gogen/automock
-* THIS FILE SHOULD NOT BE EDITED BY HAND
+* CODE GENERATED AUTOMATICALLY WITH github.com/ernesto-jimenez/goautomock
+* THIS FILE MUST NEVER BE EDITED MANUALLY
  */
 
-package automock
+package main
 
 import (
 	"fmt"

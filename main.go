@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ernesto-jimenez/gogen/automock"
+	"github.com/ernesto-jimenez/goautomock/automock"
 	"github.com/ernesto-jimenez/gogen/importer"
 	"github.com/ernesto-jimenez/gogen/strconv"
 )

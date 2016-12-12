@@ -20,15 +20,13 @@ func request(s server, path string) ([]byte, error) {
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-	m := &serverMock{}
-	var calls int
+	m := NewServerMock()
 	m.ServeFunc = func(in string) ([]byte, error) {
-		calls++
 		return nil, errors.New("error")
 	}
 	_, err := request(m, "/something")
 	assert.Error(t, err)
-	assert.Equal(t, 1, calls)
+	assert.Equal(t, 1, m.ServeTotalCalls())
 }
 ```
 
@@ -45,7 +43,15 @@ package simple
 
 // serverMock mock
 type serverMock struct {
+	calls map[string]int
+
 	ServeFunc func(string) ([]byte, error)
+}
+
+func NewServerMock() *serverMock {
+	return &serverMock{
+		calls: make(map[string]int),
+	}
 }
 
 // Serve mocked method
@@ -53,7 +59,13 @@ func (m *serverMock) Serve(p0 string) ([]byte, error) {
 	if m.ServeFunc == nil {
 		panic("unexpected call to mocked method Serve")
 	}
+	m.calls["Serve"]++
 	return m.ServeFunc(p0)
+}
+
+// ServeCalls returns the amount of calls to the mocked method Serve
+func (m *serverMock) ServeTotalCalls() int {
+	return m.calls["Serve"]
 }
 ```
 
@@ -65,7 +77,7 @@ Mocking an interface from the standard library:
 
 // Dummy test using the generated mock
 func TestWriter(t *testing.T) {
-	m := &WriterMock{}
+	m := NewWriterMock()
 	expected := []byte("hello world")
 
 	m.WriteFunc = func(b []byte) (int, error) {
@@ -76,6 +88,7 @@ func TestWriter(t *testing.T) {
 	n, err := m.Write(expected)
 	assert.NoError(t, err)
 	assert.Equal(t, 11, n)
+	assert.Equal(t, 1, m.WriteTotalCalls())
 }
 ```
 
@@ -105,15 +118,13 @@ func request(s server, path string) ([]byte, error) {
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-	m := &serverMock{}
-	var calls int
+	m := NewServerMock()
 	m.ServeFunc = func(in string) ([]byte, error) {
-		calls++
 		return nil, errors.New("error")
 	}
 	_, err := request(m, "/something")
 	assert.Error(t, err)
-	assert.Equal(t, 1, calls)
+	assert.Equal(t, 1, m.ServeTotalCalls())
 }
 ```
 

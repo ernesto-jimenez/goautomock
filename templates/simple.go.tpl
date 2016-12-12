@@ -20,7 +20,6 @@ func New{{.Name | Capitalize}}() *{{.Name}} {
 	}
 }
 
-
 {{$gen := .}}
 {{range .Methods}}
 // {{.Name}} mocked method

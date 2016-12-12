@@ -12,6 +12,10 @@ type {{.Name}} struct {
 	mock.Mock
 }
 
+func New{{.Name | Capitalize}}() *{{.Name}} {
+	return &{{.Name}}{}
+}
+
 {{$gen := .}}
 {{range .Methods}}
 // {{.Name}} mocked method

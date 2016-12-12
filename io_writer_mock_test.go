@@ -15,6 +15,10 @@ type WriterMock struct {
 	mock.Mock
 }
 
+func NewWriterMock() *WriterMock {
+	return &WriterMock{}
+}
+
 // Write mocked method
 func (m *WriterMock) Write(p0 []byte) (int, error) {
 

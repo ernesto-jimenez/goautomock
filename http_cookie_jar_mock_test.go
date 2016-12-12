@@ -18,6 +18,10 @@ type CookieJarMock struct {
 	mock.Mock
 }
 
+func NewCookieJarMock() *CookieJarMock {
+	return &CookieJarMock{}
+}
+
 // Cookies mocked method
 func (m *CookieJarMock) Cookies(p0 *url.URL) []*http.Cookie {
 

@@ -19,7 +19,7 @@ func request(s server, path string) ([]byte, error) {
 
 // Dummy test
 func TestRequestReturnsServerError(t *testing.T) {
-	m := &serverMock{}
+	m := NewServerMock()
 	m.On("Serve", "/something").Return(nil, errors.New("error"))
 
 	_, err := request(m, "/something")

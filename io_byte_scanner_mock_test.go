@@ -15,6 +15,10 @@ type ByteScannerMock struct {
 	mock.Mock
 }
 
+func NewByteScannerMock() *ByteScannerMock {
+	return &ByteScannerMock{}
+}
+
 // ReadByte mocked method
 func (m *ByteScannerMock) ReadByte() (byte, error) {
 

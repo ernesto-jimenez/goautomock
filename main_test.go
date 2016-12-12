@@ -15,7 +15,7 @@ import (
 //go:generate ./goautomock -template=testify net/http.CookieJar
 
 func TestMockedIOWriter(t *testing.T) {
-	m := &WriterMock{}
+	m := NewWriterMock()
 	expected := []byte("hello")
 	m.On("Write", expected).Return(5, nil)
 	n, err := m.Write(expected)
@@ -24,7 +24,7 @@ func TestMockedIOWriter(t *testing.T) {
 }
 
 func TestMockedCookieJar(t *testing.T) {
-	jar := &CookieJarMock{}
+	jar := NewCookieJarMock()
 	cookie := http.Cookie{Name: "hello", Value: "World"}
 	jar.On("Cookies", mock.AnythingOfType("*url.URL")).Return([]*http.Cookie{&cookie}).Once()
 	c := http.Client{Jar: jar}
@@ -36,7 +36,7 @@ func TestMockedCookieJar(t *testing.T) {
 
 func TestMockByteScanner(t *testing.T) {
 	var s io.ByteScanner
-	m := &ByteScannerMock{}
+	m := NewByteScannerMock()
 	s = m
 	m.On("ReadByte").Return(byte('_'), nil)
 	b, err := s.ReadByte()

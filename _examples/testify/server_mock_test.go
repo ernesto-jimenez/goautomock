@@ -15,6 +15,10 @@ type serverMock struct {
 	mock.Mock
 }
 
+func NewServerMock() *serverMock {
+	return &serverMock{}
+}
+
 // Serve mocked method
 func (m *serverMock) Serve(p0 string) ([]byte, error) {
 

@@ -1,6 +1,12 @@
 # goautomock
 
-Automatically generate mocks from interfaces using `go generate`
+Automatically generate mocks from interfaces using `go generate`.
+
+# Installation
+
+```shell
+go get github.com/ernesto-jimenez/goautomock
+```
 
 # Usage
 

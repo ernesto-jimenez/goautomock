@@ -31,7 +31,7 @@ func (m *{{$gen.Name}}) {{.Name}}({{range $index, $type := .ParamTypes}}{{if $in
 	{{if .ReturnTypes}}return {{end}} m.{{.Name}}Func({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}})
 }
 
-// {{.Name}}Calls returns the amount of calls to the mocked method {{.Name}}
+// {{.Name}}TotalCalls returns the amount of calls to the mocked method {{.Name}}
 func (m *{{$gen.Name}}) {{.Name}}TotalCalls() int {
 	return m.calls["{{.Name}}"]
 }

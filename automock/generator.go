@@ -10,8 +10,8 @@ import (
 	"text/template"
 	"unicode"
 
+	parseutil "github.com/ernesto-jimenez/go-parse-utils"
 	"github.com/ernesto-jimenez/gogen/cleanimports"
-	"github.com/ernesto-jimenez/gogen/importer"
 	"github.com/ernesto-jimenez/gogen/imports"
 )
 
@@ -31,7 +31,7 @@ var DefaultTemplate string
 
 // NewGenerator initializes a Generator that will mock the given interface from the specified package.
 func NewGenerator(pkg, iface string) (*Generator, error) {
-	p, err := importer.DefaultWithTestFiles().Import(pkg)
+	p, err := parseutil.NewImporter().Import(pkg)
 	if err != nil {
 		return nil, err
 	}

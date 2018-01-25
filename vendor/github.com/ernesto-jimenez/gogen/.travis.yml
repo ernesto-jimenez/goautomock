@@ -1,0 +1,11 @@
+language: go
+
+go:
+  - 1.6
+  - 1.7
+  - tip
+
+env:
+  - GO15VENDOREXPERIMENT=1
+
+script: go test -v -race ./...

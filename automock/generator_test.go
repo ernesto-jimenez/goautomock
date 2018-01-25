@@ -3,13 +3,14 @@ package automock
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
+	"path"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -54,6 +55,7 @@ func TestImports(t *testing.T) {
 
 type unexported interface {
 	io.Reader
+	Testing(*Generator)
 }
 
 func TestWritesProperly(t *testing.T) {
@@ -68,27 +70,23 @@ func TestWritesProperly(t *testing.T) {
 		{".", "unexported"},
 	}
 	for _, test := range tests {
-		var out bytes.Buffer
-		g, err := NewGenerator(test.pkg, test.iface)
-		if err != nil {
-			t.Logf("%+v", test)
-			t.Error(err)
-			continue
-		}
-		err = g.Write(&out)
-		if !assert.NoError(t, err) {
-			fmt.Println(test)
-			fmt.Println(err)
-			printWithLines(bytes.NewBuffer(out.Bytes()))
-		}
+		t.Run(path.Join(test.pkg, test.iface), func(t *testing.T) {
+			var out bytes.Buffer
+			g, err := NewGenerator(test.pkg, test.iface)
+			require.NoError(t, err)
+			err = g.Write(&out)
+			t.Log(test)
+			printWithLines(t, bytes.NewBuffer(out.Bytes()))
+			require.NoError(t, err)
+		})
 	}
 }
 
-func printWithLines(txt io.Reader) {
+func printWithLines(t *testing.T, txt io.Reader) {
 	line := 0
 	scanner := bufio.NewScanner(txt)
 	for scanner.Scan() {
 		line++
-		fmt.Printf("%-4d| %s\n", line, scanner.Text())
+		t.Logf("%-4d| %s\n", line, scanner.Text())
 	}
 }

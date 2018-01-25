@@ -49,6 +49,7 @@ type unexported interface {
 }
 
 //go:generate ./goautomock unexported
+//go:generate ./goautomock -mock-name unexported2 -pkg github.com/ernesto-jimenez/goautomock/automock unexported
 
 func TestUnexported(t *testing.T) {
 	m := NewUnexportedMock()

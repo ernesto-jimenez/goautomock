@@ -56,6 +56,7 @@ func TestImports(t *testing.T) {
 type unexported interface {
 	io.Reader
 	Testing(*Generator)
+	Test(int, ...string)
 }
 
 func TestWritesProperly(t *testing.T) {

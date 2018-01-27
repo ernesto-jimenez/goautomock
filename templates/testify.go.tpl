@@ -21,7 +21,7 @@ func New{{.Name | Capitalize}}() *{{.Name}} {
 // {{.Name}} mocked method
 func (m *{{$gen.Name}}) {{.Name}}({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}} {{$type}}{{end}}) ({{range $index, $type := .ReturnTypes}}{{if $index}}, {{end}}{{$type}}{{end}}) {
 {{if .ReturnTypes}}
-	ret := m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}})
+	ret := m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}}{{if .Variadic}}...{{end}})
 	{{range $index, $type := .ReturnTypes}}
 	var r{{$index}} {{$type}}
 	switch res := ret.Get({{$index}}).(type) {
@@ -34,7 +34,7 @@ func (m *{{$gen.Name}}) {{.Name}}({{range $index, $type := .ParamTypes}}{{if $in
 	{{end}}
 	return {{range $index, $type := .ReturnTypes}}{{if $index}}, {{end}}r{{$index}}{{end}}
 {{else}}
-	m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}})
+	m.Called({{range $index, $type := .ParamTypes}}{{if $index}}, {{end}}p{{$index}}{{end}}{{if .Variadic}}...{{end}})
 {{end}}
 }
 {{end}}

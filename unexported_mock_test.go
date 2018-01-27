@@ -25,12 +25,14 @@ func NewUnexportedMock() *unexportedMock {
 
 // Read mocked method
 func (m *unexportedMock) Read(p0 []byte) (int, error) {
-	m.mut.Lock()
-	defer m.mut.Unlock()
+	defer func() {
+		m.mut.Lock()
+		m.calls["Read"]++
+		m.mut.Unlock()
+	}()
 	if m.ReadFunc == nil {
 		panic("unexpected call to mocked method Read")
 	}
-	m.calls["Read"]++
 	return m.ReadFunc(p0)
 }
 

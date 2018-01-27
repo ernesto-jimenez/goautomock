@@ -25,6 +25,11 @@ func (m Method) ParamTypes() []string {
 	return types
 }
 
+// Variadic returns true if it is a variadic method
+func (m Method) Variadic() bool {
+	return m.signature().Variadic()
+}
+
 // ReturnTypes returns the list of types for the params
 func (m Method) ReturnTypes() []string {
 	sig := m.signature()

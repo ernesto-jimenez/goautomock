@@ -54,6 +54,7 @@ type serverMock struct {
 	ServeFunc func(string) ([]byte, error)
 }
 
+// NewServerMock creates serverMock
 func NewServerMock() *serverMock {
 	return &serverMock{
 		calls: make(map[string]int),

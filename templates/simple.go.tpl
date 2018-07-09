@@ -16,6 +16,7 @@ type {{.Name}} struct {
 	{{end}}
 }
 
+// New{{.Name | Capitalize}} creates {{.Name}}
 func New{{.Name | Capitalize}}() *{{.Name}} {
 	return &{{.Name}}{
 		calls: make(map[string]int),

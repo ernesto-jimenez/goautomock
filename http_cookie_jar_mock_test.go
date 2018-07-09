@@ -18,6 +18,7 @@ type CookieJarMock struct {
 	mock.Mock
 }
 
+// NewCookieJarMock creates CookieJarMock
 func NewCookieJarMock() *CookieJarMock {
 	return &CookieJarMock{}
 }

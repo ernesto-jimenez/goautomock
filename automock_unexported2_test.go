@@ -23,6 +23,7 @@ type unexported2 struct {
 	TestingFunc func(*automock.Generator)
 }
 
+// NewUnexported2 creates unexported2
 func NewUnexported2() *unexported2 {
 	return &unexported2{
 		calls: make(map[string]int),

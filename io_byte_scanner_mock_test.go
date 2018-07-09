@@ -15,6 +15,7 @@ type ByteScannerMock struct {
 	mock.Mock
 }
 
+// NewByteScannerMock creates ByteScannerMock
 func NewByteScannerMock() *ByteScannerMock {
 	return &ByteScannerMock{}
 }

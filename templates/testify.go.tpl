@@ -12,6 +12,7 @@ type {{.Name}} struct {
 	mock.Mock
 }
 
+// New{{.Name | Capitalize}} creates {{.Name}}
 func New{{.Name | Capitalize}}() *{{.Name}} {
 	return &{{.Name}}{}
 }

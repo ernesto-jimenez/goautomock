@@ -17,6 +17,7 @@ type unexportedMock struct {
 	ReadFunc func([]byte) (int, error)
 }
 
+// NewUnexportedMock creates unexportedMock
 func NewUnexportedMock() *unexportedMock {
 	return &unexportedMock{
 		calls: make(map[string]int),

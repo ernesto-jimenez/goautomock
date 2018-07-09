@@ -15,6 +15,7 @@ type WriterMock struct {
 	mock.Mock
 }
 
+// NewWriterMock creates WriterMock
 func NewWriterMock() *WriterMock {
 	return &WriterMock{}
 }
